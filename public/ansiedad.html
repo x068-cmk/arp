@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foro de Ansiedad y Estrés</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Delius+Swash+Caps&family=Merienda:wght@300..900&display=swap" rel="stylesheet">
+    <style>
+        /* Define las fuentes personalizadas */
+        body {
+            font-family: 'Merienda', cursive;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .title-font {
+            font-family: 'Delius Swash Caps', cursive;
+        }
+        /* Estilos para el texto en el foro */
+        .post-content {
+            white-space: pre-wrap; /* Mantiene saltos de línea y espacios del usuario */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-8 flex flex-col items-center">
+
+    <!-- Contenedor principal del foro -->
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl mb-8">
+        <h1 class="title-font text-4xl font-bold text-center text-indigo-800 mb-4">Foro de Ansiedad y Estrés</h1>
+        <p class="text-center text-gray-600 mb-8">Un lugar para expresar tus emociones y conectar con otros de forma anónima.</p>
+        
+        <!-- Sección de posts -->
+        <div id="posts-container" class="space-y-6">
+            <!-- Los posts se cargarán aquí dinámicamente -->
+            <p class="text-center text-gray-500" id="loading-message">Cargando posts...</p>
+        </div>
+
+        <!-- Formulario para crear un nuevo post -->
+        <div class="mt-8">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Crea un nuevo post</h2>
+            <form id="create-post-form" class="space-y-4">
+                <div>
+                    <label for="post-content" class="sr-only">Contenido del Post:</label>
+                    <textarea id="post-content" name="content" rows="4" required placeholder="¿Cómo te sientes hoy?"
+                              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                </div>
+                <button type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Publicar
+                </button>
+            </form>
+        </div>
+
+        <!-- Contenedor para mensajes de estado -->
+        <div id="message-container" class="mt-4 text-center"></div>
+        
+        <div class="flex justify-center mt-10">
+            <a href="psicologos.html" class="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg shadow-md hover:bg-gray-300 transition duration-300 ease-in-out">
+                Volver a la lista de temas
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const createPostForm = document.getElementById('create-post-form');
+            const postsContainer = document.getElementById('posts-container');
+            const loadingMessage = document.getElementById('loading-message');
+            const messageContainer = document.getElementById('message-container');
+
+            // Nombre del foro para la API. Debe coincidir con el backend.
+            const forumName = 'anxiety-posts';
+
+            // Datos del post de ejemplo para guiar a los usuarios
+            const examplePost = {
+                _id: 'example1',
+                content: '¡Hola a todos! Este es un espacio seguro para compartir lo que sientes. Puedes publicar tu experiencia o responder a las de otros. ¡Ánimo!',
+                author: 'Guía del Foro',
+                createdAt: new Date().toISOString(),
+                comments: [
+                    { author: 'Anónimo', text: '¡Excelente iniciativa!', date: new Date().toISOString() }
+                ]
+            };
+
+            // Función para mostrar mensajes de estado
+            function showMessage(text, isError = false) {
+                messageContainer.textContent = text;
+                messageContainer.className = `mt-4 text-center p-3 rounded-md font-medium ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`;
+                setTimeout(() => {
+                    messageContainer.textContent = '';
+                    messageContainer.className = '';
+                }, 5000);
+            }
+
+            // Función para renderizar un post y sus comentarios
+            const renderPost = (post) => {
+                const postElement = document.createElement('div');
+                postElement.className = 'bg-gray-50 p-6 rounded-xl shadow-sm hover:shadow-md transition duration-300 ease-in-out';
+                postElement.innerHTML = `
+                    <p class="text-xs text-gray-600 mb-2">Publicado por ${post.author} el ${new Date(post.createdAt).toLocaleDateString()}</p>
+                    <p class="post-content text-gray-800 mb-4">${post.content}</p>
+                    
+                    <!-- Sección de comentarios -->
+                    <div class="comment-section mt-4 border-t pt-4 border-gray-200">
+                        <h3 class="font-semibold mb-2 text-gray-700">Comentarios</h3>
+                        <div class="comments-list space-y-2">
+                            ${post.comments.map(comment => `
+                                <div class="bg-gray-200 p-2 rounded-md">
+                                    <p class="text-xs text-gray-600"><strong>${comment.author}</strong> el ${new Date(comment.date).toLocaleDateString()}</p>
+                                    <p class="text-sm text-gray-800">${comment.text}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <!-- Formulario para agregar un comentario -->
+                        <form class="comment-form mt-4" data-post-id="${post._id}">
+                            <textarea name="comment-text" rows="2" required placeholder="Escribe un comentario..."
+                                      class="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"></textarea>
+                            <button type="submit" class="w-full py-2 px-4 rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700 mt-2">
+                                Comentar
+                            </button>
+                        </form>
+                    </div>
+                `;
+                return postElement;
+            };
+            
+            // Función para renderizar todos los posts en el DOM
+            const renderPosts = (posts) => {
+                postsContainer.innerHTML = '';
+                posts.forEach(post => {
+                    postsContainer.appendChild(renderPost(post));
+                });
+            };
+
+            // Función para cargar todos los posts
+            const fetchPosts = async () => {
+                try {
+                    loadingMessage.style.display = 'block';
+
+                    const response = await fetch(`/api/posts/${forumName}`);
+                    
+                    if (!response.ok) {
+                        throw new Error('Error al cargar los posts');
+                    }
+                    const posts = await response.json();
+
+                    // Combina el post de ejemplo con los posts reales y los muestra
+                    const allPosts = [examplePost, ...posts];
+                    renderPosts(allPosts);
+                    
+                    loadingMessage.style.display = 'none';
+
+                } catch (error) {
+                    console.error('Error al cargar los posts:', error);
+                    renderPosts([examplePost]); // Muestra solo el ejemplo si hay un error
+                }
+            };
+
+            // Manejador del formulario para crear un post
+            createPostForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const content = document.getElementById('post-content').value.trim();
+
+                if (!content) {
+                    showMessage('Por favor, escribe un mensaje.', true);
+                    return;
+                }
+
+                // El autor siempre será 'Anónimo'
+                const postData = { content: content, author: 'Anónimo' };
+
+                try {
+                    const response = await fetch(`/api/posts/${forumName}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(postData)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message);
+                    }
+                    
+                    createPostForm.reset();
+                    await fetchPosts();
+                    showMessage('¡Post publicado con éxito!');
+
+                } catch (error) {
+                    console.error('Error al crear el post:', error);
+                    showMessage(`Hubo un error al crear el post: ${error.message}`, true);
+                }
+            });
+
+            // Manejador de eventos para los formularios de comentarios
+            postsContainer.addEventListener('submit', async (e) => {
+                // Comprueba si el evento proviene de un formulario de comentarios
+                if (e.target.matches('.comment-form')) {
+                    e.preventDefault();
+                    const form = e.target;
+                    const postId = form.dataset.postId;
+                    const commentText = form.querySelector('[name="comment-text"]').value.trim();
+                    
+                    if (!commentText) {
+                        showMessage('Por favor, escribe un comentario.', true);
+                        return;
+                    }
+
+                    // El autor del comentario siempre será 'Anónimo'
+                    const commentData = { author: 'Anónimo', text: commentText };
+
+                    try {
+                        // Si el post es un ejemplo, lo manejamos localmente
+                        if (postId.startsWith('example')) {
+                            examplePost.comments.push({ ...commentData, date: new Date().toISOString() });
+                            fetchPosts(); // Vuelve a renderizar
+                            form.reset();
+                            showMessage('¡Comentario agregado a un post de ejemplo!');
+                            return;
+                        }
+
+                        // Envío al backend para posts reales
+                        const response = await fetch(`/api/posts/${forumName}/${postId}/comment`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(commentData)
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.message);
+                        }
+                        
+                        form.reset();
+                        await fetchPosts();
+                        showMessage('¡Comentario agregado con éxito!');
+                    } catch (error) {
+                        console.error('Error al agregar el comentario:', error);
+                        showMessage(`Hubo un error al agregar el comentario: ${error.message}`, true);
+                    }
+                }
+            });
+
+            // Carga los posts al iniciar la página
+            fetchPosts();
+        });
+    </script>
+
+</body>
+</html>

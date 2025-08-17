@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consejos de Psicólogos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Delius+Swash+Caps&family=Merienda:wght@300..900&display=swap" rel="stylesheet">
+    <style>
+        /* Define las fuentes personalizadas */
+        body {
+            font-family: 'Merienda', cursive;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .title-font {
+            font-family: 'Delius Swash Caps', cursive;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-8 flex flex-col items-center">
+
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl mb-8">
+        <h1 class="title-font text-4xl font-bold text-center text-indigo-800 mb-4">Consejos y Apoyo Psicológico</h1>
+        <p class="text-center text-gray-600 mb-8">Selecciona un tema para leer consejos o compartir tus dudas con la comunidad y profesionales.</p>
+        
+        <!-- Contenedor donde se renderizarán los temas dinámicamente -->
+        <div id="topic-list-container" class="space-y-6">
+            <!-- Las tarjetas de temas se insertarán aquí por JavaScript -->
+        </div>
+
+        <div class="flex justify-center mt-10">
+            <a href="pantalla2.html" class="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg shadow-md hover:bg-gray-300 transition duration-300 ease-in-out">
+                Volver al menú
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Array de objetos con la información de los temas
+        const topics = [
+            {
+                id: 'ansiedad',
+                title: 'Ansiedad y Estrés',
+                description: 'Habla sobre tus preocupaciones, encuentra ejercicios de relajación y aprende a manejar el estrés diario.'
+            },
+            {
+                id: 'depresion',
+                title: 'Depresión y Sentimientos de Tristeza',
+                description: 'Un espacio para compartir experiencias y buscar apoyo cuando te sientes decaído o sin ánimo.'
+            },
+            {
+                id: 'relaciones',
+                title: 'Relaciones Interpersonales',
+                description: 'Consejos para mejorar la comunicación, resolver conflictos y construir relaciones saludables.'
+            }
+        ];
+
+        // Función para renderizar los temas en la página
+        function renderTopics() {
+            const container = document.getElementById('topic-list-container');
+            container.innerHTML = ''; // Limpiamos el contenedor antes de renderizar
+
+            topics.forEach(topic => {
+                const topicCard = document.createElement('a');
+                // IMPORTANTE: El href ahora apunta directamente a los archivos HTML específicos de cada tema.
+                topicCard.href = `${topic.id}.html`;
+                topicCard.className = 'block no-underline';
+                
+                // Usamos un template literal para crear el HTML de la tarjeta
+                topicCard.innerHTML = `
+                    <div class="bg-gray-50 p-6 rounded-xl shadow-sm hover:shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+                        <h3 class="text-2xl font-semibold text-indigo-700 mb-2">${topic.title}</h3>
+                        <p class="text-gray-500">${topic.description}</p>
+                    </div>
+                `;
+                container.appendChild(topicCard);
+            });
+        }
+
+        // Llamamos a la función cuando el documento esté completamente cargado
+        document.addEventListener('DOMContentLoaded', renderTopics);
+    </script>
+
+</body>
+</html>

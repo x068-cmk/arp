@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foro de las Emociones</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Delius+Swash+Caps&family=Merienda:wght@300..900&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos generales para el cuerpo de la página */
+        body {
+            background-color: #f0f4f8; /* Color de fondo claro */
+            color: #333;
+            font-family: 'Merienda', cursive;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Contenedor principal de la página */
+        .container-content {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            padding: 40px;
+            background-color: #ffffff; /* Fondo del contenedor */
+            border-radius: 20px; /* Bordes redondeados */
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            text-align: left;
+        }
+
+        /* Estilos para los títulos principales */
+        h1, h2 {
+            font-family: 'Delius Swash Caps', cursive;
+            color: #1e3a8a; /* Azul oscuro para los títulos */
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        
+        /* Descripción principal de la página */
+        .page-description {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* Contenedor del formulario de publicación */
+        .post-form-container {
+            background-image: linear-gradient(135deg, #e5e7eb, #d1d5db); /* Degradado de fondo */
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra para profundidad */
+            text-align: left;
+        }
+
+        .post-form-container h2 {
+            margin-bottom: 20px;
+            color: #1e3a8a;
+        }
+
+        .post-form-container textarea {
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #9ca3af;
+            resize: vertical;
+            font-family: 'Merienda', cursive;
+            font-size: 1.2em;
+            background-color: #f9fafb;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .post-form-container textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.2);
+        }
+
+        .post-form-container button {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background-color: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Merienda', cursive;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .post-form-container button:hover {
+            background-color: #1c458a;
+            transform: translateY(-2px);
+        }
+
+        /* Contenedor para los posts */
+        .forum-posts {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* Estilos para cada post individual */
+        .post {
+            background-color: #f1f5f9;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            text-align: left;
+        }
+        
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .post-content {
+            font-size: 1.1em;
+            line-height: 1.6;
+            white-space: pre-wrap; /* Mantiene saltos de línea y formato */
+            color: #444;
+        }
+        
+        /* Botón de regreso al menú */
+        .back-button {
+            display: inline-block;
+            margin-top: 50px;
+            padding: 12px 25px;
+            background-color: #d1d5db;
+            border: 1px solid #9ca3af;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .back-button:hover {
+            background-color: #b9c1cb;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-content">
+        <h1>Foro de las Emociones</h1>
+        <p class="page-description">Este es un espacio dedicado a la expresión y comprensión de las emociones. Aquí puedes leer publicaciones, compartir tus propios pensamientos y conectar con una comunidad que te apoya.</p>
+        
+        <div class="post-form-container">
+            <h2>Crear una nueva publicación</h2>
+            <form id="new-post-form">
+                <textarea id="post-content" placeholder="¿Qué quieres compartir hoy?" rows="5" required></textarea>
+                <button type="submit">Publicar</button>
+            </form>
+        </div>
+
+        <div class="forum-posts" id="forum-posts">
+            <!-- Las publicaciones se cargarán aquí desde Firebase -->
+        </div>
+
+        <a href="pantalla2.html" class="back-button">Volver al menú</a>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Importamos los módulos de Firebase que necesitamos
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        
+        // Variables globales proporcionadas por el entorno. No las edites.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        let userId = null;
+
+        // Autenticar al usuario anónimamente
+        async function authenticate() {
+            try {
+                const userCredential = await signInAnonymously(auth);
+                userId = userCredential.user.uid;
+                console.log("Usuario autenticado anónimamente con ID:", userId);
+            } catch (error) {
+                console.error("Error al autenticar usuario anónimamente:", error);
+            }
+        }
+
+        // Referencias a los elementos del DOM
+        const form = document.getElementById('new-post-form');
+        const postsContainer = document.getElementById('forum-posts');
+        const postContent = document.getElementById('post-content');
+
+        // Función para renderizar un post en la página
+        function renderPost(doc) {
+            const data = doc.data();
+            const newPost = document.createElement('div');
+            newPost.classList.add('post');
+            
+            const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString() : 'Fecha desconocida';
+
+            newPost.innerHTML = `
+                <div class="post-header">
+                    <span>Usuario Anónimo</span>
+                    <span>${date}</span>
+                </div>
+                <div class="post-content">
+                    ${data.content}
+                </div>
+            `;
+            postsContainer.prepend(newPost);
+        }
+
+        // Escuchar el envío del formulario para crear un nuevo post
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault(); 
+            
+            const content = postContent.value.trim(); 
+
+            if (!content) {
+                return;
+            }
+
+            try {
+                // Agregar el documento a la colección de posts en Firestore
+                await addDoc(collection(db, `artifacts/${appId}/public/data/emotion-posts`), {
+                    content: content,
+                    timestamp: serverTimestamp()
+                });
+                
+                console.log("Publicación guardada en Firestore.");
+                postContent.value = ''; // Limpiar el textarea después de publicar
+
+            } catch (e) {
+                console.error("Error al añadir el documento: ", e);
+                // Aquí podrías mostrar un mensaje de error al usuario
+            }
+        });
+
+        // Obtener las publicaciones de Firestore en tiempo real
+        const q = query(collection(db, `artifacts/${appId}/public/data/emotion-posts`));
+        onSnapshot(q, (querySnapshot) => {
+            // Limpiamos los posts existentes antes de renderizar los nuevos
+            postsContainer.innerHTML = '';
+            
+            // Convertimos los documentos a un array para poder ordenarlos
+            const posts = [];
+            querySnapshot.forEach(doc => {
+                posts.push({ id: doc.id, data: doc.data() });
+            });
+            
+            // Ordenamos los posts por la marca de tiempo de forma descendente (más recientes primero)
+            posts.sort((a, b) => b.data.timestamp - a.data.timestamp);
+
+            posts.forEach(post => {
+                renderPost({ id: post.id, data: post.data });
+            });
+        });
+
+        // Llamar a la función de autenticación al cargar la página
+        authenticate();
+    </script>
+
+</body>
+</html>
