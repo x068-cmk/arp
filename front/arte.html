@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Delius+Swash+Caps&family=Merienda:wght@300..900&display=swap" rel="stylesheet">
     <style>
+        /* Estilos generales del cuerpo y el contenedor principal */
         body {
             background-color: #f0f4f8;
             color: #333;
@@ -26,6 +27,7 @@
             text-align: left;
         }
         
+        /* Estilos de los títulos */
         h1 {
             font-family: 'Delius Swash Caps', cursive;
             font-size: 2.8em;
@@ -49,6 +51,7 @@
             font-weight: bold;
         }
 
+        /* Estilos de la cuadrícula de menú */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -56,6 +59,7 @@
             margin-bottom: 50px;
         }
 
+        /* Estilos de cada cuadro del menú (ahora con imágenes) */
         .menu-item {
             display: flex;
             flex-direction: column;
@@ -70,6 +74,7 @@
             font-size: 1.5em;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden; /* Oculta cualquier parte de la imagen que se desborde */
         }
 
         .menu-item:hover {
@@ -77,6 +82,15 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
+        /* Nuevo estilo para que las imágenes se ajusten perfectamente a los cuadros */
+        .menu-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Recorta la imagen para que llene el contenedor sin deformarse */
+            border-radius: 15px;
+        }
+
+        /* Estilos de las tarjetas de posts */
         .post-card {
             background-color: #f1f5f9;
             padding: 25px;
@@ -103,6 +117,7 @@
             align-items: center;
         }
 
+        /* Estilos del formulario de subida */
         .upload-form-container {
             border: 2px dashed #9ca3af;
             border-radius: 15px;
@@ -218,24 +233,25 @@
         <h1>Rincón del arte</h1>
         <p class="content-description">Este es el contenido de la página del rincón de arte. Aquí podrás encontrar inspiración y publicar tus creaciones.</p>
 
+        <!-- Se ha modificado esta sección para incluir las imágenes -->
         <div class="menu-grid">
             <div class="menu-item">
-                <span>Cuadro 1</span>
+                <img src="imagenes/imagenc1.jpeg" alt="Cuadro 1">
             </div>
             <div class="menu-item">
-                <span>Cuadro 2</span>
+                <img src="imagenes/imagenc2.png" alt="Cuadro 2">
             </div>
             <div class="menu-item">
-                <span>Cuadro 3</span>
+                <img src="imagenes/imagenc3.png" alt="Cuadro 3">
             </div>
             <div class="menu-item">
-                <span>Cuadro 4</span>
+                <img src="imagenes/imagenc4.png" alt="Cuadro 4">
             </div>
             <div class="menu-item">
-                <span>Cuadro 5</span>
+                <img src="imagenes/imagenc5.png" alt="Cuadro 5">
             </div>
             <div class="menu-item">
-                <span>Cuadro 6</span>
+                <img src="imagenes/imagenc6.png" alt="Cuadro 6">
             </div>
         </div>
         
@@ -264,17 +280,20 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        // Variables globales proporcionadas por el entorno. No las edites.
+        // Global variables provided by the environment. Do not edit them.
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-        // Inicializar Firebase y Firestore
+        // Initialize Firebase and Firestore
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Referencias a los elementos del DOM
+        // References to DOM elements
         const form = document.getElementById('new-post-form');
         const postsContainer = document.getElementById('posts-container');
         const imageUpload = document.getElementById('image-upload');
@@ -282,7 +301,20 @@
         const imagePreviewContainer = document.getElementById('image-preview-container');
         const imagePreview = document.getElementById('image-preview');
 
-        // Escuchar el cambio en el input de archivo para mostrar la vista previa
+        // Authenticate the user
+        async function authenticate() {
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Error signing in: ", error);
+            }
+        }
+
+        // Listen for changes in the file input to show a preview
         imageUpload.addEventListener('change', function() {
             if (this.files.length > 0) {
                 const file = this.files[0];
@@ -301,40 +333,39 @@
             }
         });
 
-        // Escuchar la subida del formulario
+        // Listen for form submission
         form.addEventListener('submit', async function(event) {
             event.preventDefault(); 
             
             const imageFile = imageUpload.files[0];
 
             if (!imageFile) {
-                alert('Por favor, selecciona una imagen para subir.');
+                // Use a custom UI element instead of an alert
+                console.error('Por favor, selecciona una imagen para subir.');
                 return;
             }
 
-            // Aquí es donde simulamos la subida a un servicio de almacenamiento (ej. Firebase Storage)
-            // En una app real, subirías la imagen a Firebase Storage y luego guardarías la URL en Firestore.
-            // Para este ejemplo, convertiremos el archivo a una URL de datos.
-            
             const reader = new FileReader();
             reader.onload = async function(e) {
                 const imageUrl = e.target.result;
 
                 try {
-                    // Guardar el post en Firestore
+                    // Save the post in Firestore
+                    const userId = auth.currentUser?.uid || "anonymous_user";
                     await addDoc(collection(db, `artifacts/${appId}/public/posts`), {
+                        userId: userId,
                         imageUrl: imageUrl,
-                        timestamp: serverTimestamp() // Usa la marca de tiempo del servidor para ordenar
+                        timestamp: serverTimestamp() // Use server timestamp to order posts
                     });
                     
-                    alert('Imagen publicada con éxito!');
+                    console.log('Imagen publicada con éxito!');
                     
                 } catch (e) {
-                    console.error("Error al añadir el documento: ", e);
-                    alert("Hubo un error al publicar la imagen.");
+                    console.error("Error adding document: ", e);
+                    
                 }
 
-                // Limpiar el formulario y la vista previa
+                // Clear the form and preview
                 imageUpload.value = '';
                 fileNameSpan.textContent = 'Sin archivos seleccionados';
                 imagePreviewContainer.style.display = 'none';
@@ -342,17 +373,18 @@
             reader.readAsDataURL(imageFile);
         });
 
-        // Función para renderizar un post en la página
+        // Function to render a post on the page
         function renderPost(doc) {
             const data = doc.data();
             const newPost = document.createElement('div');
             newPost.classList.add('post-card');
             
             const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString() : 'Fecha desconocida';
+            const userId = data.userId || 'Anónimo';
 
             newPost.innerHTML = `
                 <div class="post-header">
-                    <span>Anónimo</span>
+                    <span>Publicado por: ${userId}</span>
                     <span>${date}</span>
                 </div>
                 <div class="post-content">
@@ -361,15 +393,17 @@
             `;
             postsContainer.prepend(newPost);
         }
-
-        // Obtener los posts de Firestore en tiempo real y mostrarlos
-        // La consulta ordena los posts por fecha en orden descendente
-        const q = query(collection(db, `artifacts/${appId}/public/posts`), orderBy("timestamp", "desc"));
-        onSnapshot(q, (querySnapshot) => {
-            // Limpiamos los posts existentes antes de renderizar los nuevos
-            postsContainer.innerHTML = '';
-            querySnapshot.forEach((doc) => {
-                renderPost(doc);
+        
+        // Start authentication and listen for posts
+        authenticate().then(() => {
+            // Get posts from Firestore in real-time and display them
+            const q = query(collection(db, `artifacts/${appId}/public/posts`), orderBy("timestamp", "desc"));
+            onSnapshot(q, (querySnapshot) => {
+                // Clear existing posts before rendering new ones
+                postsContainer.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    renderPost(doc);
+                });
             });
         });
     </script>

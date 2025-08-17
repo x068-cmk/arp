@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foro de las Emociones</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Delius+Swash+Caps&family=Merienda:wght@300..900&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos generales para el cuerpo de la página */
+        body {
+            background-color: #f0f4f8; /* Color de fondo claro */
+            color: #333;
+            font-family: 'Merienda', cursive;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Contenedor principal de la página */
+        .container-content {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            padding: 40px;
+            background-color: #ffffff; /* Fondo del contenedor */
+            border-radius: 20px; /* Bordes redondeados */
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            text-align: left;
+        }
+
+        /* Estilos para los títulos principales */
+        h1, h2 {
+            font-family: 'Delius+Swash+Caps', cursive;
+            color: #1e3a8a; /* Azul oscuro para los títulos */
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        
+        /* Descripción principal de la página */
+        .page-description {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* Contenedor del formulario de publicación */
+        .post-form-container {
+            background-image: linear-gradient(135deg, #e5e7eb, #d1d5db); /* Degradado de fondo */
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra para profundidad */
+            text-align: left;
+        }
+
+        .post-form-container h2 {
+            margin-bottom: 20px;
+            color: #1e3a8a;
+        }
+
+        .post-form-container textarea {
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #9ca3af;
+            resize: vertical;
+            font-family: 'Merienda', cursive;
+            font-size: 1.2em;
+            background-color: #f9fafb;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .post-form-container textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.2);
+        }
+
+        .post-form-container button {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background-color: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Merienda', cursive;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .post-form-container button:hover {
+            background-color: #1c458a;
+            transform: translateY(-2px);
+        }
+
+        /* Contenedor para los posts */
+        .forum-posts {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* Estilos para cada post individual */
+        .post {
+            background-color: #f1f5f9;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            text-align: left;
+        }
+        
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .post-content-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            white-space: pre-wrap; /* Mantiene saltos de línea y formato */
+            color: #444;
+        }
+        
+        /* Botón de regreso al menú */
+        .back-button {
+            display: inline-block;
+            margin-top: 50px;
+            padding: 12px 25px;
+            background-color: #d1d5db;
+            border: 1px solid #9ca3af;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .back-button:hover {
+            background-color: #b9c1cb;
+            transform: translateY(-2px);
+        }
+
+        /* Styling for the comments section */
+        .comments-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .comments-section h3 {
+            font-family: 'Merienda', cursive;
+            color: #1e3a8a;
+            text-align: left;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .comments-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .comment {
+            background-color: #f8fafd; /* Lighter background for comments */
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 8px;
+        }
+
+        .comment-content-text {
+            font-size: 1em;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            color: #555;
+        }
+
+        .comment-form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            resize: vertical;
+            font-family: 'Merienda', cursive;
+            font-size: 0.95em;
+            background-color: #ffffff;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .comment-form textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .comment-form button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #3b82f6; /* A slightly different blue for comment buttons */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Merienda', cursive;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .comment-form button:hover {
+            background-color: #2563eb;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-content">
+        <h1>Foro de las Emociones</h1>
+        <p class="page-description">Este es un espacio dedicado a la expresión y comprensión de las emociones. Aquí puedes leer publicaciones, compartir tus propios pensamientos y conectar con una comunidad que te apoya.</p>
+        
+        <div class="post-form-container">
+            <h2>Crear una nueva publicación</h2>
+            <form id="new-post-form">
+                <textarea id="post-content" placeholder="¿Qué quieres compartir hoy?" rows="5" required></textarea>
+                <button type="submit">Publicar</button>
+            </form>
+        </div>
+
+        <div class="forum-posts" id="forum-posts">
+            <!-- Las publicaciones se cargarán aquí desde el backend -->
+        </div>
+
+        <a href="pantalla2.html" class="back-button">Volver al menú</a>
+    </div>
+
+    <script>
+        // *** CONFIGURACIÓN DEL BACKEND ***
+        // Esta es la URL base de tu API de backend.
+        // ¡NECESITAS ASEGURARTE DE QUE ESTA URL COINCIDA CON LA DE TU SERVIDOR FLASK!
+        // Por defecto, Flask se ejecuta en el puerto 5000.
+        const API_BASE_URL = 'http://127.0.0.1:5000/api'; 
+
+        // Referencias a los elementos del DOM
+        const form = document.getElementById('new-post-form');
+        const postsContainer = document.getElementById('forum-posts');
+        const postContentInput = document.getElementById('post-content');
+
+        // Función para obtener las publicaciones desde el backend
+        async function fetchPosts() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/posts`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const postsData = await response.json();
+                // Suponemos que el backend ya ordena las publicaciones por fecha descendente
+                postsContainer.innerHTML = ''; // Limpiamos el contenedor
+                postsData.forEach(post => renderPost(post));
+            } catch (error) {
+                console.error("Error al obtener las publicaciones:", error);
+                postsContainer.innerHTML = '<p style="text-align: center; color: red;">No se pudieron cargar las publicaciones. Asegúrate de que tu servidor de backend esté funcionando en ' + API_BASE_URL + '</p>';
+            }
+        }
+
+        // Función para enviar una nueva publicación al backend
+        async function createPost(content) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/posts`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ content: content })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                // Si la publicación fue exitosa, volvemos a cargar los posts para ver el nuevo
+                await fetchPosts();
+                postContentInput.value = ''; // Limpiar el textarea
+            } catch (error) {
+                console.error("Error al crear la publicación:", error);
+                // Aquí podrías mostrar un mensaje de error al usuario
+            }
+        }
+
+        // Función para enviar un nuevo comentario a una publicación específica
+        async function addCommentToPost(postId, commentContent) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/posts/${postId}/comments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ content: commentContent })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                // Si el comentario fue exitoso, volvemos a cargar todos los posts
+                // Esto es un poco ineficiente, pero simple para este ejemplo.
+                // Idealmente, solo se recargarían los comentarios de esa publicación.
+                await fetchPosts();
+            } catch (error) {
+                console.error(`Error al añadir comentario a la publicación ${postId}:`, error);
+                // Aquí podrías mostrar un mensaje de error al usuario
+            }
+        }
+
+        // Función para renderizar un post en la página
+        function renderPost(postData) {
+            const newPost = document.createElement('div');
+            newPost.classList.add('post');
+            
+            // Usamos la fecha del post si viene del backend, si no, la actual (menos probable aquí)
+            const date = postData.timestamp ? new Date(postData.timestamp).toLocaleDateString() : 'Fecha desconocida';
+
+            newPost.innerHTML = `
+                <div class="post-header">
+                    <span>Usuario Anónimo</span>
+                    <span>${date}</span>
+                </div>
+                <div class="post-content-text">
+                    ${postData.content}
+                </div>
+                <div class="comments-section">
+                    <h3>Comentarios:</h3>
+                    <div id="comments-container-${postData.id}" class="comments-container">
+                        <!-- Los comentarios se cargarán aquí -->
+                    </div>
+                    <form id="comment-form-${postData.id}" class="comment-form">
+                        <textarea class="comment-content-input" placeholder="Escribe un comentario..." rows="2" required></textarea>
+                        <button type="submit">Comentar</button>
+                    </form>
+                </div>
+            `;
+            postsContainer.prepend(newPost);
+
+            const commentsContainer = newPost.querySelector(`#comments-container-${postData.id}`);
+            const commentForm = newPost.querySelector(`#comment-form-${postData.id}`);
+            const commentContentInput = newPost.querySelector(`.comment-content-input`); 
+
+            // Listener para el envío de comentarios
+            commentForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const content = commentContentInput.value.trim();
+                if (!content) return;
+
+                await addCommentToPost(postData.id, content); // Llama a la función que interactúa con el backend
+                commentContentInput.value = ''; // Limpiar el textarea
+            });
+
+            // Renderiza los comentarios existentes (si los hay) para este post
+            if (postData.comments && postData.comments.length > 0) {
+                renderComments(commentsContainer, postData.comments);
+            }
+        }
+
+        // Función auxiliar para renderizar los comentarios de un post dado su contenedor y array de comentarios
+        function renderComments(container, commentsArray) {
+            container.innerHTML = '';
+            // Aseguramos que los comentarios estén ordenados por fecha ascendente
+            const sortedComments = [...commentsArray].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+            sortedComments.forEach(comment => {
+                const commentDiv = document.createElement('div');
+                commentDiv.classList.add('comment');
+                const commentDate = comment.timestamp ? new Date(comment.timestamp).toLocaleDateString() : 'Fecha desconocida';
+                commentDiv.innerHTML = `
+                    <div class="comment-header">
+                        <span>Usuario Anónimo</span>
+                        <span>${commentDate}</span>
+                    </div>
+                    <div class="comment-content-text">${comment.content}</div>
+                `;
+                container.appendChild(commentDiv);
+            });
+        }
+
+        // Escuchar el envío del formulario para crear un nuevo post
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault(); 
+            const content = postContentInput.value.trim(); 
+            if (!content) return;
+            await createPost(content); // Llama a la función que interactúa con el backend
+        });
+
+        // Al cargar la página, obtenemos las publicaciones desde el backend
+        fetchPosts();
+    </script>
+
+</body>
+</html>
